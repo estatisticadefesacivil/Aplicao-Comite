@@ -33,7 +33,7 @@ def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
 # 📌 Rota de Cadastro
-@app.route('https://estatisticadefesacivil.github.io/Aplicao-Comite/beneficiarios%20indigenas%202024/templates/cadastro.html', methods=['GET', 'POST'])
+@app.route('/cadastro', methods=['GET', 'POST'])
 def cadastro():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -52,7 +52,7 @@ def cadastro():
         flash("Cadastro realizado com sucesso! Faça login.", "success")
         return redirect(url_for("login"))
 
-    return render_template('cadastro.html')
+    return render_template('https://estatisticadefesacivil.github.io/Aplicao-Comite/beneficiarios%20indigenas%202024/templates/cadastro.html')
 
 # 📌 Rota de Login
 @app.route('/login', methods=['GET', 'POST'])
