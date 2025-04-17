@@ -33,7 +33,7 @@ def load_user(user_id):
     return Usuario.query.get(int(user_id))
 
 # 📌 Rota de Cadastro
-@app.route('/cadastro', methods=['GET', 'POST'])
+@app.route('https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/templates/cadastro.html', methods=['GET', 'POST'])
 def cadastro():
     if request.method == 'POST':
         nome = request.form['nome']
@@ -153,7 +153,7 @@ def formulario():
     return render_template('formulario.html')
 
 # 📌 Visualizar respostas do usuário logado
-@app.route('/minhas-respostas')
+@app.route('https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/templates/minhas_respostas.html')
 @login_required
 def minhas_respostas():
     if os.path.exists(dados_excel):
