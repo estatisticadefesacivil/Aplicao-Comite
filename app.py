@@ -8,7 +8,7 @@ import os
 app = Flask(__name__)
 @app.route('/')
 def home():
-    return redirect(url_for('index'))
+    return redirect(url_for('login'))
 # app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
@@ -23,7 +23,6 @@ login_manager.login_view = "login"
 # os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
 ONEDRIVE_FOLDER = 'dados'
 os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
-dados_excel = os.path.join(ONEDRIVE_FOLDER, 'dados_formulario.xlsx')
 
 # 📄 Nome do arquivo Excel para armazenar respostas
 dados_excel = os.path.join(ONEDRIVE_FOLDER, 'dados_formulario.xlsx')
@@ -57,12 +56,12 @@ def cadastro():
         db.session.commit()
 
         flash("Cadastro realizado com sucesso! Faça login.", "success")
-        return redirect(url_for("index"))
+        return redirect(url_for("login"))
 
     return render_template('cadastro.html')
 
 # 📌 Rota de Login
-@app.route('/index', methods=['GET', 'POST'])
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -76,7 +75,7 @@ def login():
         flash("Login inválido!", "danger")
         return redirect(url_for("login"))
 
-    return render_template('index.html')
+    return render_template('login.html')
 
 
 # 📌 Formulário de Respostas (Apenas para usuários logados)
@@ -229,7 +228,7 @@ def excluir_resposta(indice):
 def logout():
     logout_user()  # Função do Flask-Login para deslogar o usuário
     flash("Você saiu com sucesso.", "info")  # Mensagem de sucesso ao deslogar
-    return redirect(url_for('index'))  # Redireciona para a página de login
+    return redirect(url_for('login'))  # Redireciona para a página de login
 
 
 # 📌 Rodar o aplicativo
