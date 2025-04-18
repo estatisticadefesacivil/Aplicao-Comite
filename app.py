@@ -6,6 +6,9 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
+@app.route('/')
+def home():
+    return redirect(url_for('index'))
 # app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
