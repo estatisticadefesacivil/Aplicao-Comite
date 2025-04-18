@@ -6,7 +6,8 @@ import pandas as pd
 import os
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
+# app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
+app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
@@ -15,8 +16,11 @@ login_manager = LoginManager(app)
 login_manager.login_view = "login"
 
 # 📂 Caminho do OneDrive
-ONEDRIVE_FOLDER = r'C:/Users/ewila/OneDrive - PRODAM Office 365/Dados-comitê'
+# ONEDRIVE_FOLDER = r'C:/Users/ewila/OneDrive - PRODAM Office 365/Dados-comitê'
+# os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
+ONEDRIVE_FOLDER = 'dados'
 os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
+dados_excel = os.path.join(ONEDRIVE_FOLDER, 'dados_formulario.xlsx')
 
 # 📄 Nome do arquivo Excel para armazenar respostas
 dados_excel = os.path.join(ONEDRIVE_FOLDER, 'dados_formulario.xlsx')
@@ -50,12 +54,12 @@ def cadastro():
         db.session.commit()
 
         flash("Cadastro realizado com sucesso! Faça login.", "success")
-        return redirect(url_for("login"))
+        return redirect(url_for("index"))
 
     return render_template('cadastro.html')
 
 # 📌 Rota de Login
-@app.route('/login', methods=['GET', 'POST'])
+@app.route('/index', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form['email']
@@ -69,7 +73,7 @@ def login():
         flash("Login inválido!", "danger")
         return redirect(url_for("login"))
 
-    return render_template('login.html')
+    return render_template('index.html')
 
 
 # 📌 Formulário de Respostas (Apenas para usuários logados)
@@ -229,5 +233,5 @@ def logout():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()  # Cria banco de dados se não existir
-    app.run(debug=True)
+    # app.run(debug=True)
 
