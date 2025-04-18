@@ -185,7 +185,7 @@
             <div class="form-box">
                 <h1>Bem vindo(a)</h1>
                 <p>Acesse sua conta para continuar</p>
-                <form method="POST">
+                <form method="POST" action="{{ url_for('login') }}">
                     <input type="email" name="email" placeholder="nome@exemplo.com" required>
                     <input type="password" name="senha" placeholder="********" required>
                     <button type="submit">Entrar</button>

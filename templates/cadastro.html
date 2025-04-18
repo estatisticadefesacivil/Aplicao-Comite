@@ -186,7 +186,7 @@
       <div class="form-box">
         <h1>Junte-se a essa causa</h1>
         <p>Insira os seus dados para realizar o cadastro na plataforma.</p>
-        <form method="POST">
+        <form method="POST" action="{{ url_for('cadastro') }}">
           <label for="nome">Digite seu Nome Completo</label>
           <input type="nome" id="nome" class="name" placeholder="NOME COMPLETO" required>
           <label for="email">Digite seu e-mail</label>
