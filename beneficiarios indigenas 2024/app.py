@@ -52,7 +52,7 @@ def cadastro():
         flash("Cadastro realizado com sucesso! Faça login.", "success")
         return redirect(url_for("login"))
 
-    return render_template('https://estatisticadefesacivil.github.io/Aplicao-Comite/beneficiarios%20indigenas%202024/templates/cadastro.html')
+    return render_template('cadastro.html')
 
 # 📌 Rota de Login
 @app.route('/login', methods=['GET', 'POST'])
@@ -222,7 +222,7 @@ def excluir_resposta(indice):
 def logout():
     logout_user()  # Função do Flask-Login para deslogar o usuário
     flash("Você saiu com sucesso.", "info")  # Mensagem de sucesso ao deslogar
-    return redirect(url_for('login'))  # Redireciona para a página de login
+    return redirect(url_for('index'))  # Redireciona para a página de login
 
 
 # 📌 Rodar o aplicativo

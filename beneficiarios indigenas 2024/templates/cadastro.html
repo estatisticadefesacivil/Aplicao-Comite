@@ -197,7 +197,7 @@
           <p class="error-message" id="error-message" style="color:#ff4d4d">E-mail ou senha inválidos!</p>
         </form>
         <div class="loader" id="loader"></div>
-        <p> Já possui cadastro? <a href="{{ url_for('login') }}">Realizar login.</a></p>
+        <p> Já possui cadastro? <a href="{{ url_for('index') }}">Realizar login.</a></p>
         <div class="logo">
           <img src="../static/amazonas-logo.svg" alt="Logo Amazonas" height="120" />
         </div>
@@ -239,7 +239,7 @@
                     } else {
                         usuariosValidos.push({nome:nome, email:email, senha:senha});
                         alert("Cadastro realizado com sucesso!");
-                        window.location.href = "login.html";
+                        window.location.href = "index.html";
                     }
             }, 2000);
         });
