@@ -1,10 +1,10 @@
+import os
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
-import os
-from onedrive_utils import enviar_para_onedrive
+from onedrive_utils import enviar_para_onedrive, ler_arquivo_onedrive
 
 
 app = Flask(__name__)
@@ -23,11 +23,11 @@ login_manager.login_view = "login"
 # 📂 Caminho do OneDrive
 # ONEDRIVE_FOLDER = r'C:/Users/ewila/OneDrive - PRODAM Office 365/Dados-comitê'
 # os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
-ONEDRIVE_FOLDER = 'dados'
-os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
+# ONEDRIVE_FOLDER = 'dados'
+# os.makedirs(ONEDRIVE_FOLDER, exist_ok=True)
 
 # 📄 Nome do arquivo Excel para armazenar respostas
-dados_excel = os.path.join(ONEDRIVE_FOLDER, 'dados_formulario.xlsx')
+dados_excel = 'dados_formulario.xlsx'
 
 # 📌 Modelo de usuário
 class Usuario(UserMixin, db.Model):
@@ -148,11 +148,7 @@ def formulario():
         })
 
         try:
-            if os.path.exists(dados_excel):
-                df_existente = pd.read_excel(dados_excel)
-                df_final = pd.concat([df_existente, novo_dado], ignore_index=True)
-            else:
-                df_final = novo_dado
+            df_final = novo_dado
 
             # Enviar o arquivo atualizado para o OneDrive
             sucesso = enviar_para_onedrive(df_final)
@@ -162,7 +158,7 @@ def formulario():
                 return render_template('formulario.html')  # Evita redirecionamento contínuo
 
             flash("Dados enviados com sucesso!", "success")
-            return redirect(url_for("formulario"))
+            return redirect(url_for("minhas_respostas"))
 
         except Exception as e:
             flash(f"Erro inesperado: {e}", "danger")
@@ -174,8 +170,9 @@ def formulario():
 @app.route('/minhas_respostas')
 @login_required
 def minhas_respostas():
-    if os.path.exists(dados_excel):
-        df = pd.read_excel(dados_excel)
+    df = ler_arquivo_onedrive(dados_excel)
+
+    if df is not None:
         df_usuario = df[df['Usuário'] == current_user.email]
         respostas = df_usuario.to_dict(orient="records")
     else:
@@ -184,56 +181,72 @@ def minhas_respostas():
     return render_template('minhas_respostas.html', respostas=respostas, nome_usuario=current_user.nome)
 
 
+
 # 📌 Editar resposta
 @app.route('/editar-resposta/<int:indice>', methods=['GET', 'POST'])
 @login_required
 def editar_resposta(indice):
-    if os.path.exists(dados_excel):
-        df = pd.read_excel(dados_excel)
+    df = ler_arquivo_onedrive(dados_excel)
 
-        # Verifique se o índice é válido
-        if 0 <= indice < len(df):
-            resposta = df.iloc[indice]
-
-            # Verifique se o usuário logado tem permissão para editar
-            if resposta["Usuário"] != current_user.email:
-                flash("Você não tem permissão para editar esta resposta!", "danger")
-                return redirect(url_for('minhas_respostas'))
-
-            if request.method == 'POST':
-                df.at[indice, 'Nome Secretaria'] = request.form['nome_secretaria']
-                df.at[indice, 'Situação Problema'] = request.form['situacao_problema']
-
-
-                df.to_excel(dados_excel, index=False)  # Salvar alterações
-                flash("Resposta editada com sucesso!", "success")
-                return redirect(url_for('minhas_respostas'))
-
-            return render_template('editar_resposta.html', resposta=resposta, indice=indice)
-
-        flash("Resposta não encontrada!", "danger")
+    if df is None:
+        flash("Erro ao acessar dados no OneDrive!", "danger")
         return redirect(url_for('minhas_respostas'))
+
+    if 0 <= indice < len(df):
+        resposta = df.iloc[indice]
+
+        if resposta["Usuário"] != current_user.email:
+            flash("Você não tem permissão para editar esta resposta!", "danger")
+            return redirect(url_for('minhas_respostas'))
+
+        if request.method == 'POST':
+            df.at[indice, 'Nome Secretaria'] = request.form['nome_secretaria']
+            df.at[indice, 'Situação Problema'] = request.form['situacao_problema']
+
+            sucesso = enviar_para_onedrive(df)
+
+            if not sucesso:
+                flash("Erro ao salvar dados editados no OneDrive!", "danger")
+                return redirect(url_for('minhas_respostas'))
+
+            flash("Resposta editada com sucesso!", "success")
+            return redirect(url_for('minhas_respostas'))
+
+        return render_template('editar_resposta.html', resposta=resposta, indice=indice)
+
+    flash("Resposta não encontrada!", "danger")
+    return redirect(url_for('minhas_respostas'))
 
 # 📌 Excluir resposta
 @app.route('/excluir-resposta/<int:indice>', methods=['POST'])
 @login_required
 def excluir_resposta(indice):
-    if os.path.exists(dados_excel):
-        df = pd.read_excel(dados_excel)
+    df = ler_arquivo_onedrive(dados_excel)
 
-        # Verifique se o índice é válido
-        if 0 <= indice < len(df):
-            resposta = df.iloc[indice]
+    if df is None:
+        flash("Erro ao acessar dados no OneDrive!", "danger")
+        return redirect(url_for('minhas_respostas'))
 
-            # Verifique se o usuário logado tem permissão para excluir
-            if resposta["Usuário"] != current_user.email:
-                flash("Você não tem permissão para excluir esta resposta!", "danger")
-                return redirect(url_for('minhas_respostas'))
+    if 0 <= indice < len(df):
+        resposta = df.iloc[indice]
 
-            df = df.drop(index=indice).reset_index(drop=True)
-            df.to_excel(dados_excel, index=False)  # Salvar alterações
-            flash("Resposta excluída com sucesso!", "success")
+        if resposta["Usuário"] != current_user.email:
+            flash("Você não tem permissão para excluir esta resposta!", "danger")
             return redirect(url_for('minhas_respostas'))
+
+        df = df.drop(index=indice).reset_index(drop=True)
+
+        sucesso = enviar_para_onedrive(df)
+
+        if not sucesso:
+            flash("Erro ao excluir resposta no OneDrive!", "danger")
+            return redirect(url_for('minhas_respostas'))
+
+        flash("Resposta excluída com sucesso!", "success")
+        return redirect(url_for('minhas_respostas'))
+
+    flash("Resposta não encontrada!", "danger")
+    return redirect(url_for('minhas_respostas'))
         
 @app.route('/logout', methods=['POST'])
 @login_required  # Garantir que o usuário esteja logado para fazer o logout

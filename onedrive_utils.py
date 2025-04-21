@@ -2,6 +2,7 @@ import os
 from msal import ConfidentialClientApplication
 import requests
 from io import BytesIO
+import pandas as pd
 
 def enviar_para_onedrive(df, nome_arquivo="dados_formulario.xlsx"):
     client_id = os.environ['CLIENT_ID']
@@ -35,4 +36,45 @@ def enviar_para_onedrive(df, nome_arquivo="dados_formulario.xlsx"):
     }
 
     response = requests.put(upload_url, headers=headers, data=buffer.read())
-    return response.status_code == 200
+    if response.status_code == 200:
+        return True
+    else:
+        print("Erro ao enviar arquivo:", response.text)
+        return False
+    
+def ler_arquivo_onedrive(nome_arquivo="dados_formulario.xlsx"):
+    client_id = os.environ['CLIENT_ID']
+    client_secret = os.environ['CLIENT_SECRET']
+    tenant_id = os.environ['TENANT_ID']
+    authority = f"https://login.microsoftonline.com/{tenant_id}"
+    scopes = ["https://graph.microsoft.com/.default"]
+
+    app = ConfidentialClientApplication(
+        client_id,
+        authority=authority,
+        client_credential=client_secret
+    )
+
+    token_response = app.acquire_token_for_client(scopes=scopes)
+    access_token = token_response.get("access_token")
+
+    if not access_token:
+        print("Erro ao obter token:", token_response.get("error_description"))
+        return None
+
+    download_url = f"https://graph.microsoft.com/v1.0/users/estatistica.analisededados@defesacivil.am.gov.br/drive/root:/Comite-Enfrentamento/{nome_arquivo}:/content"
+
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(download_url, headers=headers)
+
+    if response.status_code == 200:
+        buffer = BytesIO(response.content)
+        df = pd.read_excel(buffer)
+        return df
+    else:
+        print("Erro ao baixar arquivo:", response.text)
+        return None
+
