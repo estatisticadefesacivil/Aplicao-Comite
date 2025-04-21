@@ -382,7 +382,15 @@
             </form>
         </div>
     </div>
-
+    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                      {% for category, message in messages %}
+                        <div class="alert alert-{{ category }} alert-dismissible fade show mt-2" role="alert">
+                          {{ message }}
+                        </div>
+                      {% endfor %}
+                    {% endif %}
+                  {% endwith %}
     <script>
         function toggleMunicipios() {
             var acaoNivel = document.getElementById("acao_nivel").value;
