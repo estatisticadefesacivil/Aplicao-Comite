@@ -4,12 +4,14 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 from werkzeug.security import generate_password_hash, check_password_hash
 import pandas as pd
 import os
+from onedrive_utils import enviar_para_onedrive
+
 
 app = Flask(__name__)
 @app.route('/')
 def home():
     return redirect(url_for('login'))
-# app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
+#app.config['SECRET_KEY'] = 'chave-secreta'  # Alterar para uma chave segura
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///usuarios.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -145,18 +147,26 @@ def formulario():
             'Secretarias Realizada': [secretarias_realizada]
         })
 
+    try:
         if os.path.exists(dados_excel):
             df_existente = pd.read_excel(dados_excel)
             df_final = pd.concat([df_existente, novo_dado], ignore_index=True)
         else:
             df_final = novo_dado
 
-        df_final.to_excel(dados_excel, index=False)
+        # Enviar o arquivo atualizado para o OneDrive
+        sucesso = enviar_para_onedrive(df_final)
+
+        if not sucesso:
+            flash("Erro ao enviar para o OneDrive", "danger")
+            return redirect(url_for("formulario"))
 
         flash("Dados enviados com sucesso!", "success")
         return redirect(url_for("formulario"))
 
-    return render_template('formulario.html')
+    except Exception as e:
+        flash(f"Erro inesperado: {e}", "danger")
+        return redirect(url_for("formulario"))
 
 # 📌 Visualizar respostas do usuário logado
 @app.route('/minhas_respostas')
