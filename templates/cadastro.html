@@ -200,12 +200,15 @@
           <button type="submit" id="register-btn">CADASTRAR</button>
         
           {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-              {% for category, message in messages %}
-                <p style="color: red">{{ message }}</p>
-              {% endfor %}
-            {% endif %}
-          {% endwith %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show mt-2" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}        
         </form>
                 
         <div class="loader" id="loader"></div>

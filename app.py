@@ -50,14 +50,14 @@ def cadastro():
         senha_hash = generate_password_hash(senha)
 
         if Usuario.query.filter_by(email=email).first():
-            flash("E-mail já cadastrado!", "danger")
+            flash("E-mail já cadastrado!", category = 'danger')
             return redirect(url_for("cadastro"))
 
         novo_usuario = Usuario(nome=nome, email=email, senha=senha_hash)
         db.session.add(novo_usuario)
         db.session.commit()
 
-        flash("Cadastro realizado com sucesso! Faça login.", "success")
+        flash("Cadastro realizado com sucesso! Faça login.", category= 'success')
         return redirect(url_for("login"))
 
     return render_template('cadastro.html')
@@ -74,7 +74,7 @@ def login():
             login_user(usuario)
             return redirect(url_for("minhas_respostas"))
 
-        flash("Login inválido!", "danger")
+        flash("Login inválido!", category = 'danger')
         return redirect(url_for("login"))
 
     return render_template('login.html')
@@ -154,14 +154,14 @@ def formulario():
             sucesso = enviar_para_onedrive(df_final)
 
             if not sucesso:
-                flash("Erro ao enviar para o OneDrive", "danger")
+                flash("Erro ao enviar para o OneDrive", category = 'danger')
                 return render_template('formulario.html')  # Evita redirecionamento contínuo
 
-            flash("Dados enviados com sucesso!", "success")
+            flash("Dados enviados com sucesso!", category = 'success')
             return redirect(url_for("minhas_respostas"))
 
         except Exception as e:
-            flash(f"Erro inesperado: {e}", "danger")
+            flash(f"Erro inesperado: {e}", category = 'danger')
             return render_template('formulario.html')  # Evita redirecionamento contínuo
 
     return render_template('formulario.html')  # Para GET, renderiza o formulário
@@ -189,14 +189,14 @@ def editar_resposta(indice):
     df = ler_arquivo_onedrive(dados_excel)
 
     if df is None:
-        flash("Erro ao acessar dados no OneDrive!", "danger")
+        flash("Erro ao acessar dados no OneDrive!", category = 'danger')
         return redirect(url_for('minhas_respostas'))
 
     if 0 <= indice < len(df):
         resposta = df.iloc[indice]
 
         if resposta["Usuário"] != current_user.email:
-            flash("Você não tem permissão para editar esta resposta!", "danger")
+            flash("Você não tem permissão para editar esta resposta!", category = 'danger')
             return redirect(url_for('minhas_respostas'))
 
         if request.method == 'POST':
@@ -206,15 +206,15 @@ def editar_resposta(indice):
             sucesso = enviar_para_onedrive(df)
 
             if not sucesso:
-                flash("Erro ao salvar dados editados no OneDrive!", "danger")
+                flash("Erro ao salvar dados editados no OneDrive!", category = 'danger')
                 return redirect(url_for('minhas_respostas'))
 
-            flash("Resposta editada com sucesso!", "success")
+            flash("Resposta editada com sucesso!", category = 'success')
             return redirect(url_for('minhas_respostas'))
 
         return render_template('editar_resposta.html', resposta=resposta, indice=indice)
 
-    flash("Resposta não encontrada!", "danger")
+    flash("Resposta não encontrada!", category = 'danger')
     return redirect(url_for('minhas_respostas'))
 
 # 📌 Excluir resposta
@@ -224,14 +224,14 @@ def excluir_resposta(indice):
     df = ler_arquivo_onedrive(dados_excel)
 
     if df is None:
-        flash("Erro ao acessar dados no OneDrive!", "danger")
+        flash("Erro ao acessar dados no OneDrive!", category = 'danger')
         return redirect(url_for('minhas_respostas'))
 
     if 0 <= indice < len(df):
         resposta = df.iloc[indice]
 
         if resposta["Usuário"] != current_user.email:
-            flash("Você não tem permissão para excluir esta resposta!", "danger")
+            flash("Você não tem permissão para excluir esta resposta!", category = 'danger')
             return redirect(url_for('minhas_respostas'))
 
         df = df.drop(index=indice).reset_index(drop=True)
@@ -239,20 +239,20 @@ def excluir_resposta(indice):
         sucesso = enviar_para_onedrive(df)
 
         if not sucesso:
-            flash("Erro ao excluir resposta no OneDrive!", "danger")
+            flash("Erro ao excluir resposta no OneDrive!", category = 'danger')
             return redirect(url_for('minhas_respostas'))
 
-        flash("Resposta excluída com sucesso!", "success")
+        flash("Resposta excluída com sucesso!", category = 'success')
         return redirect(url_for('minhas_respostas'))
 
-    flash("Resposta não encontrada!", "danger")
+    flash("Resposta não encontrada!", category = 'danger')
     return redirect(url_for('minhas_respostas'))
         
 @app.route('/logout', methods=['POST'])
 @login_required  # Garantir que o usuário esteja logado para fazer o logout
 def logout():
     logout_user()  # Função do Flask-Login para deslogar o usuário
-    flash("Você saiu com sucesso.", "info")  # Mensagem de sucesso ao deslogar
+    flash("Você saiu com sucesso.", category = 'info')  # Mensagem de sucesso ao deslogar
     return redirect(url_for('login'))  # Redireciona para a página de login
 
 
