@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             color: white;
+            box-sizing: border-box;
         }
 
         .header {
@@ -86,7 +87,8 @@
         }
 
         .btn {
-            width: 20%;
+            width: 100%;
+            max-width: 250px;
             padding: 15px;
             border: none;
             border-radius: 8px;
@@ -95,10 +97,9 @@
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
-            margin: 10px 40px 20px 0px;
+            margin: 10px 0;
             text-align: center;
             text-decoration: none;
-            
         }
 
         .btn:hover {
@@ -154,6 +155,41 @@
         .delete-btn {
             color: #ff4d4d;
         }
+
+        @media (max-width: 1024px) {
+            .header {
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-around;
+                padding: 20px
+            }
+            .logout {
+                margin: 0 auto;
+                /* margin-top: 30px;
+                margin-left: 200px; */
+            }
+
+            .btn {
+                width: 100%;
+                margin: 15px 0;
+            }
+
+            .text-container{
+                display: flex;
+                flex-direction: row;
+                align-items: left;
+                justify-content: space-between;
+                width: 500px;
+            }
+            .container {
+            width: 300%;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+        }
+        }
               
     </style>
 </head>
@@ -163,8 +199,10 @@
         <div class="logo">
             <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/amazonas-logo.svg" alt="Logo Amazonas">
             <div class="text-container">
+                <div>
                 <h2>Comitê Permanente de Enfrentamento aos Eventos</h2>
                 <p>Climáticos & Ambientais</p>
+            </div>
             </div>
         </div>     
         <a href="{{ url_for('login') }}" class="logout">
