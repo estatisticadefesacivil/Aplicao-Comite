@@ -1,256 +1,161 @@
-<!DOCTYPE html>
-<html lang="pt-BR">
+<!DOCTYPE html><html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Comitê do Clima | Painel</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background: url('https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/background-home.svg') no-repeat center center fixed;
-            background-size: cover;
-            margin: 0;
-            padding: 0;
-            color: white;
-            box-sizing: border-box;
-        }
-
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background-color: transparent;
-            padding: 15px 30px 40px;
-        }
-
-        .header .logo {
-            display: flex;
-            align-items: center; 
-            gap: 15px;
-        }
-
-
-        .header img {
-            height: 100px;
-        }
-
-        .header h2 {
-            font-size: 18px;
-            margin: 0;
-            max-width: 300px;
-        }
-
-        .header p {
-            font-size: 18px;
-            margin: 0;
-            max-width: 300px;
-            color: #A8D252;
-        }
-
-        .logout {
-            color: white;
-            text-decoration: none;
-            font-size: 16px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-            cursor: pointer;
-            margin-right:40px;
-        }
-
-        .logout img {
-            height: 32px;
-        }
-
-        .container {
-            width: 80%;
-            margin: 30px auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-
-        .text-container {
-            display: flex;
-            flex-direction: column;
-            padding-left: 15px;
-            border-left: 2px solid white;
-            height: 50px;
-            justify-content: center; 
-        }
-
-        .user-section {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .btn {
-            width: 100%;
-            max-width: 250px;
-            padding: 15px;
-            border: none;
-            border-radius: 8px;
-            background: linear-gradient(to right, #22c55e, #3b82f6);
-            color: white;
-            font-size: 1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin: 10px 0;
-            text-align: center;
-            text-decoration: none;
-        }
-
-        .btn:hover {
-            filter: brightness(1.1);            
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-            background: white;
-            color: black;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        th, td {
-            padding: 12px;
-            text-align: center;
-            border-bottom: 1px solid #ddd;
-        }
-
-        th {
-            background: #88b378;
-            color: white;
-        }
-
-        tr:hover {
-            background: #f2f2f2;
-        }
-
-        .actions button {
-            border: none;
-            background: none;
-            cursor: pointer;
-            padding: 8px;
-        }
-
-        .actions img {
-            width: 24px;
-            height: 24px;            
-        }
-
-        .actions button:hover img {
-            background-color: #CDE9BE;
-            border-radius: 12px;    
-        }
-
-        .edit-btn {
-            color: #1e90ff;
-        }
-
-        .delete-btn {
-            color: #ff4d4d;
-        }
-
-        @media (max-width: 1024px) {
-            .header {
-                flex-direction: row;
-                align-items: center;
-                justify-content: space-around;
-                padding: 20px
-            }
-            .logout {
-                margin: 0 auto;
-                /* margin-top: 30px;
-                margin-left: 200px; */
-            }
-
-            .btn {
-                width: 100%;
-                margin: 15px 0;
-            }
-
-            .text-container{
-                display: flex;
-                flex-direction: row;
-                align-items: left;
-                justify-content: space-between;
-                width: 500px;
-            }
-            .container {
-            width: 300%;
-            margin: 0 auto;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 20px;
-            border-radius: 10px;
-            backdrop-filter: blur(5px);
-        }
-        }
-              
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Comitê do Clima | Painel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      background: url('https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/background-home.svg') no-repeat center center fixed;
+      background-size: cover;
+    }
+  </style>
 </head>
-<body>
+<body class="text-white font-sans m-0 p-0 box-border">
 
-    <div class="header">
-        <div class="logo">
-            <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/amazonas-logo.svg" alt="Logo Amazonas">
-            <div class="text-container">
-                <div>
-                <h2>Comitê Permanente de Enfrentamento aos Eventos</h2>
-                <p>Climáticos & Ambientais</p>
-            </div>
-            </div>
-        </div>     
-        <a href="{{ url_for('login') }}" class="logout">
-                sair<img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/logout-icon.svg" alt="Editar" title="Editar">                
+  <!-- <header class="flex justify-between items-center px-12 pt-6 pb-16 bg-transparent">
+    <div class="flex items-center gap-6">
+      <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/amazonas-logo.svg" alt="Logo Amazonas" class="h-40" />
+      <div class="pl-6 border-l-2 border-white h-20 flex flex-col justify-center">
+        <h2 class="text-xl font-bold max-w-xs">Comitê Permanente de Enfrentamento aos Eventos</h2>
+        <p class="text-xl text-lime-400">Climáticos & Ambientais</p>
+      </div>
+    </div>
+    <a href="{{ url_for('login') }}" class="flex items-center gap-2 text-white text-base mr-16 hover:underline">
+      sair
+      <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/logout-icon.svg" alt="Sair" class="h-8" />
+    </a>
+  </header>
+
+  <div class="flex justify-center items-center mt-8 mb-8 p-10">
+  <main class="w-full mx-auto mt-12 p-4 md:p-8  bg-white/10 rounded-xl text-white">
+    <div class="flex justify-between items-center mb-6">
+      <h1 class="text-2xl font-bold">Olá, {{ current_user.nome.upper() }}</h1>
+      <a href="{{ url_for('formulario') }}" class="btn bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold py-3 px-6 rounded-lg text-sm hover:brightness-110">+ ADICIONAR RESPOSTA</a>
+    </div>
+     <div style="overflow-x: auto">
+      <table class="w-full border-collapse mt-8 bg-white text-black rounded-xl overflow" style="width:100 ; table-layout: fixed; word-wrap: break-word;">
+        <thead>
+          <tr class="text-white text-sm" style ="background-color: #88b378">
+            <th class="py-3 px-4">Secretaria</th>
+            <th class="py-3 px-4">Ocorrência</th>
+            <th class="py-3 px-4">Descrição da Ocorrência</th>
+            <th class="py-3 px-4">Valores Empenhados</th>
+            <th class="py-3 px-4">Data de Início</th>
+            <th class="py-3 px-4">Data de Término</th>
+            <th class="py-3 px-4">Ações</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for resposta in respostas %}
+          <tr class="hover:bg-gray-100 text-center text-sm">
+            <td class="py-3 px-4">{{ resposta['Nome Secretaria'] }}</td>
+            <td class="py-3 px-4">{{ resposta['Situação Problema'] }}</td>
+            <td class="py-3 px-4">{{ resposta['Descrição Ação'] }}</td>
+            <td class="py-3 px-4">{{ resposta['Valor Empenhado'] }}</td>
+            <td class="py-3 px-4">{{ resposta['Data Início'] }}</td>
+            <td class="py-3 px-4">{{ resposta['Data Fim'] }}</td>
+            <td class="py-3 px-4 flex justify-center">
+              <a href="{{ url_for('editar_resposta', indice=loop.index0) }}">
+                <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/edit-icon.svg" alt="Editar" title="Editar" class="w-6 h-6 hover:bg-green-100 rounded-full p-1" />
+              </a>
+              <form action="{{ url_for('excluir_resposta', indice=loop.index0) }}" method="post" onsubmit="return confirm('Tem certeza que deseja excluir?')">
+                <button type="submit">
+                  <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/delete-icon.svg" alt="Excluir" title="Excluir" class="w-6 h-6 hover:bg-red-100 rounded-full p-1" />
+                </button>
+              </form>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+     </div>
+    
+  </main>
+  
+  </div> -->
+
+  <header class="flex justify-between px-8 pt-6 pb-4 bg-transparent">
+    <div class="flex items-center gap-2 md:gap-6">
+      <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/amazonas-logo.svg" alt="Logo Amazonas" class="h-10 md:h-40" />
+      <div class="pl-2 md:pl-6 border-l-2 border-white h-15 md:h-20 flex flex-col justify-center">
+        <h2 class="text-xs md:text-xl font-bold max-w-xs">Comitê Permanente de Enfrentamento aos Eventos</h2>
+        <p class="text-xs md:text-xl text-lime-400">Climáticos & Ambientais</p>
+      </div>
+    </div>
+    <a href="{{ url_for('login') }}" class="flex items-center text-white text-sm md:text-lg gap-2 md:mr-8 hover:underline">
+      sair
+      <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/logout-icon.svg" alt="Sair" class="h-6 md:h-8" />
+    </a>
+  </header>
+  <div class="flex justify-center items-center mb-8 p-10">
+    <main class="w-full mx-auto mt-12 p-4 md:p-8  bg-white/10 rounded-xl text-white">
+      <div class="flex flex-col md:flex-row gap-6 justify-between items-center mb-6">
+        <h1 class="text-lg md:text-3xl font-bold flex-col md:flex-row">Olá, {{ current_user.nome.upper() }}</h1>
+        <a href="{{ url_for('formulario') }}" class="btn bg-gradient-to-r from-green-500 to-blue-500 text-white font-bold py-3 px-4 rounded-lg text-sm hover:brightness-110">+ ADICIONAR RESPOSTA</a>
+      </div>
+  {% for resposta in respostas %}    
+  <div class="hidden justify-center bg-[#88b378] text-center text-white font-bold text-sm md:text-lg md:grid grid-cols-6 rounded-t-lg ">
+    <div class="p-4">Secretaria</div>
+    <div class="p-4">Ocorrência</div>
+    <div class="p-4">Valor</div>
+    <div class="p-4">Início</div>
+    <div class="p-4">Término</div>
+    <div class="p-4">Ações</div>
+  </div>
+  
+  <div class="grid grid-cols-1 md:grid-cols-6 gap-y-6 py-3 md:gap-0 text-sm text-center bg-white border-4 border-[#88b378] md:border-none rounded-lg md:rounded-b-lg md:rounded-t-none text-black">
+    <!-- Mobile label (visível apenas em telas pequenas) -->
+
+    <!-- Secretaria -->
+    <div class="flex md:block justify-between gap-2 px-3 border-b border-gray-300 md:border-none">
+      <span class="md:hidden font-semibold">Secretaria:</span>
+      <span class="text-center md:text-left">{{ resposta['Nome Secretaria'] }}</span>
+    </div>
+  
+    <!-- Ocorrência -->
+    <div class="flex md:block justify-between gap-2 px-3 border-b border-gray-300 md:border-none">
+      <span class="md:hidden font-semibold">Ocorrência:</span>
+      <span class="text-center md:text-left">{{ resposta['Situação Problema'] }}</span>
+    </div>
+
+    <!-- Valor -->
+    <div class="flex md:block justify-between gap-2 px-3 border-b border-gray-300 md:border-none">
+      <span class="md:hidden font-semibold">Valor:</span>
+      <span class="text-center md:text-left">{{ resposta['Valor Empenhado'] }}</span>
+    </div>
+
+    <!-- Início -->
+    <div class="flex md:block justify-between gap-2 px-3 border-b border-gray-300 md:border-none">
+      <span class="md:hidden font-semibold">Início:</span>
+      <span class="text-center md:text-left">{{ resposta['Data Início'] }}</span>
+    </div>
+
+    <!-- Término -->
+    <div class="flex md:block justify-between gap-2 px-3 border-b border-gray-300 md:border-none">
+      <span class="md:hidden font-semibold">Término:</span>
+      <span class="text-center md:text-left">{{ resposta['Data Fim'] }}</span>
+    </div>
+
+    <!-- Ações -->
+    <div class="flex md:block justify-between md:justify-center gap-2 px-3">
+      <span class="md:hidden font-semibold">Ações:</span>
+      <div class="flex gap-2 justify-center">
+        <a href="{{ url_for('editar_resposta', indice=loop.index0) }}">
+          <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/edit-icon.svg" class="w-6 h-6" />
         </a>
+        <form action="{{ url_for('excluir_resposta', indice=loop.index0) }}" method="post">
+          <button type="submit" onclick="return confirm('Tem certeza?')">
+            <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/delete-icon.svg" class="w-6 h-6" />
+          </button>
+        </form>
+      </div>
     </div>
-
-    <div class="container">
-        <div class="user-section">
-            <h1>Olá, {{ current_user.nome.upper() }}</h1>
-            <a href="{{ url_for('formulario') }}" class="btn">+ ADICIONAR RESPOSTA</a>    
-        </div>
-
-        <table>
-            <thead>
-                <tr>
-                    <th>Secretaria</th>
-                    <th>Ocorrência</th>
-                    <th>Descrição da Ocorrência</th>
-                    <th>Valores Empenhados</th>
-                    <th>Data de Início</th>
-                    <th>Data de Término</th>
-                    <th>Ações</th>
-                </tr>
-                {% for resposta in respostas %}
-            </thead>
-            <tbody>
-                <tr>
-                    <td>{{ resposta['Nome Secretaria'] }}</td>
-                    <td>{{ resposta['Situação Problema'] }}</td>
-                    <td>{{ resposta['Descrição Ação'] }}</td>
-                    <td>{{ resposta['Valor Empenhado'] }}</td>
-                    <td>{{ resposta['Data Início'] }}</td>
-                    <td>{{ resposta['Data Fim'] }}</td>
-                    <td class="actions">
-                        <a href="{{ url_for('editar_resposta', indice=loop.index0) }}"><img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/edit-icon.svg" alt="Editar" title="Editar"></a>  
-                        </button>
-                        <button class="delete-btn">
-                            <form action="{{ url_for('excluir_resposta', indice=loop.index0) }}" method="post" style="display:inline;"><button type="submit" onclick="return confirm('Tem certeza que deseja excluir?')">
-                                <img src="https://raw.githubusercontent.com/estatisticadefesacivil/Aplicao-Comite/refs/heads/main/beneficiarios%20indigenas%202024/static/delete-icon.svg" alt="Excluir" title="Excluir"></button>
-                            </form>           
-                        </button>
-                    </td>
-                </tr>
-                {% endfor %}                               
-            </tbody>
-        </table>
     </div>
+    {% endfor %}
+  </main>
 
+    </div>
+  </div>
 </body>
 </html>
